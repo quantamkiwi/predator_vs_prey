@@ -1,4 +1,5 @@
 import random
+from being import Being
 
 class Prey:
     """ 
@@ -19,7 +20,10 @@ class Prey:
         self.d = d
 
         # Initializing location on the map.
-        self.loc = self.random_location()
+        self.starting_loc = self.random_location()
+
+        # Initialize a being to the starting location.
+        self.b = Being(self.starting_loc)
 
 
     def tick(self):
@@ -80,7 +84,10 @@ class Predator:
         self.d = d
 
         # Initialize a random location on the map on creation.
-        self.loc = self.random_location()
+        self.starting_loc = self.random_location()
+
+        # Initialize a being to the starting location.
+        self.b = Being(self.starting_loc)
 
 
     def tick(self):
@@ -91,7 +98,7 @@ class Predator:
             self.death()
             self.counter = 0
             
-        
+    
     def death(self):
         """ 
         Upon death, boolean variables need to be changed to let the rest of 
@@ -99,6 +106,7 @@ class Predator:
         """
         self.dead = True
         self.action = True
+
 
     def recover(self):
         """  

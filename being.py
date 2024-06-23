@@ -3,9 +3,15 @@
 class Being:
     """
     The base being class with energy, speed and position.
+
+    direction:
+
+            ^ (0, 1)
+            |
+                -- > (1, 0)
     """
 
-    direction = 0
+    direction = (0, 0)
     speed = 0
     energy = 10
 

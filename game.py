@@ -7,6 +7,33 @@ from teams import Team
 class MoreThanTwoTeamsException(Exception):
     pass
 
+class Map:
+    """
+    Map class to hold the locations of all the members. This means
+    the entire map can be passed to each member and the members can access
+    their vision through indexing. This increases the speed of the code.
+    """
+
+    def __init__(self, xs, ys):
+
+        # Initializing variables.
+        self.xs = xs
+        self.ys = ys
+        self.map = np.zeros((self.xs, self.ys))
+        self.t1 = self.map.copy()
+        self.t2 = self.map.copy()
+
+
+    def update(self, t1, t2):
+        """
+        Update the locations of members within the map. 
+        """
+        for location in t1:
+            self.t1[location[0], location[1]] += 1 
+        for location in t2:
+            self.t2[location[0], location[1]] += 1 
+
+
 class Game:
     """ 
     Grapher class, responsible for holding the map. Plotting the map
@@ -18,9 +45,10 @@ class Game:
 
         # Initializing variables.
         self.size = size
-        self.d = np.linspace(-size, size, size*2 + 1)
+        self.d = np.linspace(0, size * 2, size*2 + 1)
         self.xs = self.d.copy()
         self.ys = self.d.copy()
+        self.map = Map(self.xs, self.ys)
         self.prey_xs = np.array([])
         self.prey_ys = np.array([])
         self.predator_xs = np.array([])
@@ -48,30 +76,30 @@ class Game:
             """
             Main Loop of the program.
             """
-            
-            # Specify to the teams that one period of time has passed.
-            self.tick()
 
             # Load in all of the location data for each unit in each team.
             self.t1_xs = np.array(
-                [unit.loc[0] for unit in self.teams[0].members.values()]
+                [unit.b.loc[0] for unit in self.teams[0].members.values()]
             )
             self.t1_ys = np.array(
-                [unit.loc[1] for unit in self.teams[0].members.values()]
+                [unit.b.loc[1] for unit in self.teams[0].members.values()]
             )
             t1.set_offsets(np.c_[self.t1_xs, self.t1_ys])
 
             if len(self.teams) > 1:
                 self.t2_xs = np.array(
-                    [unit.loc[0] for unit in self.teams[1].members.values()]
+                    [unit.b.loc[0] for unit in self.teams[1].members.values()]
                 )
                 self.t2_ys = np.array(
-                    [unit.loc[1] for unit in self.teams[1].members.values()]
+                    [unit.b.loc[1] for unit in self.teams[1].members.values()]
                 )
                 t2.set_offsets(np.c_[self.t1_xs, self.t1_ys])
 
             # Updates the user on time and population.
             print(f'Time: {i} Seconds, Population: {self.teams[0].pop}')
+
+            # Specify to the teams that one period of time has passed.
+            self.tick()
             
             return t1
 
@@ -114,8 +142,14 @@ class Game:
         """
         Specifies to the team that one period of time has passed.
         """
+        self.t1_locs = [(self.t1_xs[i], self.t1_ys[i]) for i in range(len(self.t1_xs))]
+        if len(self.teams) > 1:
+            self.t2_locs = [(self.t2_xs[i], self.t2_ys[i]) for i in range(len(self.t2_xs))]
+        
+        self.map.update(self.t1_locs, self.t2_locs)
+
         for t in self.teams:
-            t.tick()
+            t.tick(self.map)
 
             
         

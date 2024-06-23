@@ -45,7 +45,7 @@ class Team:
                     self.members[i] = Predator(self.d)
     
 
-    def tick(self):
+    def tick(self, map):
         """ 
         Every second this function runs to update the
         team members.
