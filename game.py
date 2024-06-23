@@ -19,7 +19,7 @@ class Map:
         # Initializing variables.
         self.xs = xs
         self.ys = ys
-        self.map = np.zeros((self.xs, self.ys))
+        self.map = np.zeros((len(self.xs), len(self.ys)))
         self.t1 = self.map.copy()
         self.t2 = self.map.copy()
 
@@ -28,10 +28,12 @@ class Map:
         """
         Update the locations of members within the map. 
         """
+        self.t1 = self.map.copy()
+        self.t2 = self.map.copy()
         for location in t1:
-            self.t1[location[0], location[1]] += 1 
+            self.t1[location[1]][location[0]] += 1 
         for location in t2:
-            self.t2[location[0], location[1]] += 1 
+            self.t2[location[1]][location[0]] += 1 
 
 
 class Game:
@@ -145,6 +147,8 @@ class Game:
         self.t1_locs = [(self.t1_xs[i], self.t1_ys[i]) for i in range(len(self.t1_xs))]
         if len(self.teams) > 1:
             self.t2_locs = [(self.t2_xs[i], self.t2_ys[i]) for i in range(len(self.t2_xs))]
+        else:
+            self.t2_locs = []
         
         self.map.update(self.t1_locs, self.t2_locs)
 

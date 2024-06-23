@@ -26,11 +26,13 @@ class Prey:
         self.b = Being(self.starting_loc)
 
 
-    def tick(self):
+    def tick(self, map):
         """ 
         Called every second to add itself to the map and 
         potentially reproduce.
         """
+        self.map = map
+        self.vision()
 
         # Check if meets the criteria to reproduce.
         if self.counter > 5:
@@ -50,6 +52,32 @@ class Prey:
             self.action = True
 
 
+    def vision(self):
+        """
+        Uses the current location of the being and the map 
+        to see all of the predators and prey around it.
+        """
+
+        a = self.b.loc[1] - 4 
+        if a < 0:
+            a = 0
+
+        b = self.b.loc[1] + 5 
+        if b > self.d[-1]:
+            b = self.d[-1]
+        
+        c = self.b.loc[0] - 4 
+        if c < 0:
+            c = 0
+
+        d = self.b.loc[0] + 5 
+        if d > self.d[-1]:
+            d = self.d[-1]
+
+        self.see_prey = self.map.t1[a:b, c:d]
+        self.see_pred = self.map.t2[a:b, c:d]
+
+
     def recover(self):
         """ 
         Reset if the prey has just reproduced.
@@ -63,8 +91,8 @@ class Prey:
         Compute a random location for the prey to sit itself down on 
         the map.
         """
-        return (random.choice(self.d), 
-                random.choice(self.d))
+        return (int(random.choice(self.d)), 
+                int(random.choice(self.d)))
     
 
 class Predator:
@@ -90,14 +118,41 @@ class Predator:
         self.b = Being(self.starting_loc)
 
 
-    def tick(self):
+    def tick(self, map):
         """
         Called every second to see whether the predator should die or not.
         """
+        self.map = map
+        self.vision()
+
         if self.counter > 10:
             self.death()
             self.counter = 0
-            
+
+    def vision(self):
+        """
+        Uses the current location of the being and the map 
+        to see all of the predators and prey around it.
+        """
+
+        a = self.b.loc[1] - 4 
+        if a < 0:
+            a = 0
+
+        b = self.b.loc[1] + 5 
+        if b > self.d[-1]:
+            b = self.d[-1]
+        
+        c = self.b.loc[0] - 4 
+        if c < 0:
+            c = 0
+
+        d = self.b.loc[0] + 5 
+        if d > self.d[-1]:
+            d = self.d[-1]
+
+        self.see_prey = self.map.t1[a:b, c:d]
+        self.see_pred = self.map.t2[a:b, c:d]    
     
     def death(self):
         """ 
@@ -120,5 +175,5 @@ class Predator:
         """  
         Calculate a random location to spawn on the map.
         """
-        return (random.choice(self.d), 
-                random.choice(self.d))
+        return (int(random.choice(self.d)), 
+                int(random.choice(self.d)))

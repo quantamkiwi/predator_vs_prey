@@ -53,7 +53,7 @@ class Team:
         for member in self.members.values():
 
             # Tick each member.
-            member.tick()
+            member.tick(map)
 
             if member.action:
                 # When prey reproduces or predator dies.
