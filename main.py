@@ -17,6 +17,7 @@ def main():
 
     # Create Prey.
     game.create_team(0, 5)
+    game.create_team(1, 2)
 
     # Start Game and Animation.
     game.start()

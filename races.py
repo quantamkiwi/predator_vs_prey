@@ -1,5 +1,7 @@
 import random
+import numpy as np
 from being import Being
+
 
 class Prey:
     """ 
@@ -58,19 +60,19 @@ class Prey:
         to see all of the predators and prey around it.
         """
 
-        a = self.b.loc[1] - 4 
+        a = int(self.b.loc[1] - 4)
         if a < 0:
             a = 0
 
-        b = self.b.loc[1] + 5 
+        b = int(self.b.loc[1] + 5)
         if b > self.d[-1]:
             b = self.d[-1]
         
-        c = self.b.loc[0] - 4 
+        c = int(self.b.loc[0] - 4)
         if c < 0:
             c = 0
 
-        d = self.b.loc[0] + 5 
+        d = int(self.b.loc[0] + 5)
         if d > self.d[-1]:
             d = self.d[-1]
 
@@ -135,25 +137,44 @@ class Predator:
         to see all of the predators and prey around it.
         """
 
-        a = self.b.loc[1] - 4 
-        if a < 0:
-            a = 0
+        max = len(self.d)
+        if self.b.direction[0] != 0:
+            a = self.b.loc[0] - 1
+            b = self.b.loc[0] + 2 
+            a = 0 if a < 0 else a 
+            b = max if b > max else b 
 
-        b = self.b.loc[1] + 5 
-        if b > self.d[-1]:
-            b = self.d[-1]
-        
-        c = self.b.loc[0] - 4 
-        if c < 0:
-            c = 0
-
-        d = self.b.loc[0] + 5 
-        if d > self.d[-1]:
-            d = self.d[-1]
-
-        self.see_prey = self.map.t1[a:b, c:d]
-        self.see_pred = self.map.t2[a:b, c:d]    
+            self.see_prey = self.map.t1[self.b.loc[1], self.b.loc[0] - 1 : self.b.loc[0] + 2]
+            self.see_pred = self.map.t2[self.b.loc[1], self.b.loc[0] - 1 : self.b.loc[0] + 2]
+            
+            if self.b.direction[0] > 0:
+                num = max - self.b.loc[1] if self.b.loc[1] + 6 > max else 6
+            else:
+                num = self.b.loc[1] if self.b.loc[1] - 6 < 0 else 6
+            
+            for i in range(1, num):
+                self.see_prey = np.vstack((self.see_prey, self.map.t1[self.b.loc[1] + i*self.b.direction[0], self.b.loc[0] - 1 : self.b.loc[0] + 2]))
+                self.see_pred = np.vstack((self.see_pred, self.map.t2[self.b.loc[1] + i*self.b.direction[0], self.b.loc[0] - 1 : self.b.loc[0] + 2]))
     
+        else:
+            a = self.b.loc[1] - 1
+            b = self.b.loc[1] + 2 
+            a = 0 if a < 0 else a 
+            b = max if b > max else b 
+
+            self.see_prey = self.map.t1[self.b.loc[1] - 1 : self.b.loc[1] + 2, self.b.direction[0]]
+            self.see_pred = self.map.t2[self.b.loc[1] - 1 : self.b.loc[1] + 2, self.b.direction[0]]
+
+            if self.b.direction[1] > 0:
+                num = max - self.b.loc[0] if self.b.loc[0] + 6 > max else 6
+            else:
+                num = self.b.loc[0] if self.b.loc[0] - 6 < 0 else 6
+
+            for i in range(1, num):
+                self.see_prey = np.vstack((self.see_prey, self.map.t1[self.b.loc[1] - 1 : self.b.loc[1] + 2, self.b.loc[0] + i*self.b.direction[1]])) 
+                self.see_pred = np.vstack((self.see_pred, self.map.t2[self.b.loc[1] - 1 : self.b.loc[1] + 2, self.b.loc[0] + i*self.b.direction[1]])) 
+
+
     def death(self):
         """ 
         Upon death, boolean variables need to be changed to let the rest of 

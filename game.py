@@ -71,8 +71,8 @@ class Game:
         self.ax = self.fig.add_subplot(1,1,1)
         self.ax.set_xlim(self.xs[0], self.xs[-1])
         self.ax.set_ylim(self.ys[0], self.ys[-1])
-        t1 = self.ax.scatter(0,0, color='g')
-        t2 = self.ax.scatter(0,0)
+        t1 = self.ax.scatter(0,0, color='g', label="Prey")
+        t2 = self.ax.scatter(1,0, color='r', label="Predators")
 
         def animation_frame(i):
             """
@@ -95,7 +95,7 @@ class Game:
                 self.t2_ys = np.array(
                     [unit.b.loc[1] for unit in self.teams[1].members.values()]
                 )
-                t2.set_offsets(np.c_[self.t1_xs, self.t1_ys])
+                t2.set_offsets(np.c_[self.t2_xs, self.t2_ys])
 
             # Updates the user on time and population.
             print(f'Time: {i} Seconds, Population: {self.teams[0].pop}')
@@ -156,13 +156,3 @@ class Game:
             t.tick(self.map)
 
             
-        
-
-
-
-# Testers.
-
-# m = Map()
-# print(m.xs)
-# g = Graph(m.xs, m.ys)
-# g.draw()
