@@ -14,18 +14,18 @@ class Team:
     race: int
     name: str
     pop: int
-
-    members = dict()
-    dead = list()
-    born = dict()
+    members: dict
+    dead: list
+    born: dict
 
     def __init__(self, race, initial_population, d):
         self.race = race 
         self.pop = initial_population
         self.d = d
-        self.map = map
+        self.members = dict()
+        self.dead = list()
+        self.born = dict()
         self.create_team()
-
 
     def create_team(self):
         """ 

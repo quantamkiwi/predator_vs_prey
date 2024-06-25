@@ -11,7 +11,6 @@ def main():
     Main Function.
     """
 
-
     # Initialize Game.
     game = Game(100)
 
@@ -23,10 +22,6 @@ def main():
     game.start()
 
             
-
-
-
-
 
 if __name__ == "__main__":
     main()

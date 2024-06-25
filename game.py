@@ -72,7 +72,9 @@ class Game:
         self.ax.set_xlim(self.xs[0], self.xs[-1])
         self.ax.set_ylim(self.ys[0], self.ys[-1])
         t1 = self.ax.scatter(0,0, color='g', label="Prey")
-        t2 = self.ax.scatter(1,0, color='r', label="Predators")
+        t2 = self.ax.scatter(0,0, color='r', label="Predator")
+        self.ax.legend()
+        self.ax.grid()
 
         def animation_frame(i):
             """
@@ -87,15 +89,15 @@ class Game:
                 [unit.b.loc[1] for unit in self.teams[0].members.values()]
             )
             t1.set_offsets(np.c_[self.t1_xs, self.t1_ys])
-
-            if len(self.teams) > 1:
-                self.t2_xs = np.array(
-                    [unit.b.loc[0] for unit in self.teams[1].members.values()]
-                )
-                self.t2_ys = np.array(
-                    [unit.b.loc[1] for unit in self.teams[1].members.values()]
-                )
-                t2.set_offsets(np.c_[self.t2_xs, self.t2_ys])
+            
+            # if len(self.teams) > 1:
+            self.t2_xs = np.array(
+                [unit.b.loc[0] for unit in self.teams[1].members.values()]
+            )
+            self.t2_ys = np.array(
+                [unit.b.loc[1] for unit in self.teams[1].members.values()]
+            )
+            t2.set_offsets(np.c_[self.t2_xs, self.t2_ys])
 
             # Updates the user on time and population.
             print(f'Time: {i} Seconds, Population: {self.teams[0].pop}')
@@ -103,7 +105,7 @@ class Game:
             # Specify to the teams that one period of time has passed.
             self.tick()
             
-            return t1
+            return t1, t2
 
         # Creates the animation and runs the loop.
         animation = anim.FuncAnimation(self.fig, func=animation_frame, frames=np.arange(0, 100, 1), interval=1000)
@@ -111,21 +113,21 @@ class Game:
         # Show the animation.
         plt.show()
 
-    def set_prey(self, loc):
-        """  
-        The prey call this themselves to add themselves to the mapper.
-        Not sure how well this is doing...
-        """
-        self.prey_xs = np.append(self.prey_xs, loc[0])
-        self.prey_ys = np.append(self.prey_ys, loc[1])
+    # def set_prey(self, loc):
+    #     """  
+    #     The prey call this themselves to add themselves to the mapper.
+    #     Not sure how well this is doing...
+    #     """
+    #     self.prey_xs = np.append(self.prey_xs, loc[0])
+    #     self.prey_ys = np.append(self.prey_ys, loc[1])
 
-    def set_predator(self, loc):
-        """  
-        The predators call this themselves to add themselves to the mapper.
-        Not sure how well this is doing...
-        """
-        self.predator_xs = np.append(self.predator_xs, loc[0])
-        self.predator_ys = np.append(self.predator_ys, loc[1])
+    # def set_predator(self, loc):
+    #     """  
+    #     The predators call this themselves to add themselves to the mapper.
+    #     Not sure how well this is doing...
+    #     """
+    #     self.predator_xs = np.append(self.predator_xs, loc[0])
+    #     self.predator_ys = np.append(self.predator_ys, loc[1])
 
 
     def create_team(self, race, initial_population):
@@ -137,7 +139,9 @@ class Game:
         if len(self.teams) == 2:
             raise MoreThanTwoTeamsException("You tried to create a third team!")
         else:
-            self.teams.append(Team(race, initial_population, self.d))
+            print(f"Team Created. Race: {race}")
+            team = Team(race, initial_population, self.d)
+            self.teams.append(team)
 
 
     def tick(self):

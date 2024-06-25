@@ -20,6 +20,7 @@ class Prey:
         self.action = False
         self.chances = [1, 2, 3, 4, 5]
         self.d = d
+        self.race = 0
 
         # Initializing location on the map.
         self.starting_loc = self.random_location()
@@ -66,7 +67,7 @@ class Prey:
 
         b = int(self.b.loc[1] + 5)
         if b > self.d[-1]:
-            b = self.d[-1]
+            b = int(self.d[-1])
         
         c = int(self.b.loc[0] - 4)
         if c < 0:
@@ -74,7 +75,7 @@ class Prey:
 
         d = int(self.b.loc[0] + 5)
         if d > self.d[-1]:
-            d = self.d[-1]
+            d = int(self.d[-1])
 
         self.see_prey = self.map.t1[a:b, c:d]
         self.see_pred = self.map.t2[a:b, c:d]
@@ -112,6 +113,7 @@ class Predator:
         self.action = False
         self.dead = False
         self.d = d
+        self.race = 1
 
         # Initialize a random location on the map on creation.
         self.starting_loc = self.random_location()
