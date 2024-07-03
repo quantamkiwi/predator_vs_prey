@@ -11,7 +11,7 @@ class Being:
                 -- > (1, 0)
     """
 
-    direction = (0, 0)
+    direction = (1, 0)
     speed = 0
     energy = 10
 

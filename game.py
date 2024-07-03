@@ -99,6 +99,8 @@ class Game:
             )
             t2.set_offsets(np.c_[self.t2_xs, self.t2_ys])
 
+            print([unit.see_prey for unit in self.teams[1].members.values()])
+            # print(self.map.t1)
             # Updates the user on time and population.
             print(f'Time: {i} Seconds, Population: {self.teams[0].pop}')
 

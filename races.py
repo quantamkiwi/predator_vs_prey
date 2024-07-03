@@ -21,6 +21,8 @@ class Prey:
         self.chances = [1, 2, 3, 4, 5]
         self.d = d
         self.race = 0
+        self.see_pred = np.array([])
+        self.see_prey = np.array([])
 
         # Initializing location on the map.
         self.starting_loc = self.random_location()
@@ -60,20 +62,21 @@ class Prey:
         Uses the current location of the being and the map 
         to see all of the predators and prey around it.
         """
+        length = 6
 
-        a = int(self.b.loc[1] - 4)
+        a = int(self.b.loc[1] - length)
         if a < 0:
             a = 0
 
-        b = int(self.b.loc[1] + 5)
+        b = int(self.b.loc[1] + length + 1)
         if b > self.d[-1]:
             b = int(self.d[-1])
         
-        c = int(self.b.loc[0] - 4)
+        c = int(self.b.loc[0] - length)
         if c < 0:
             c = 0
 
-        d = int(self.b.loc[0] + 5)
+        d = int(self.b.loc[0] + length + 1)
         if d > self.d[-1]:
             d = int(self.d[-1])
 
@@ -114,6 +117,8 @@ class Predator:
         self.dead = False
         self.d = d
         self.race = 1
+        self.see_pred = np.array([])
+        self.see_prey = np.array([])
 
         # Initialize a random location on the map on creation.
         self.starting_loc = self.random_location()
@@ -138,9 +143,10 @@ class Predator:
         Uses the current location of the being and the map 
         to see all of the predators and prey around it.
         """
+        length = 10
 
         max = len(self.d)
-        if self.b.direction[0] != 0:
+        if self.b.direction[1] != 0:
             a = self.b.loc[0] - 1
             b = self.b.loc[0] + 2 
             a = 0 if a < 0 else a 
@@ -150,13 +156,13 @@ class Predator:
             self.see_pred = self.map.t2[self.b.loc[1], self.b.loc[0] - 1 : self.b.loc[0] + 2]
             
             if self.b.direction[0] > 0:
-                num = max - self.b.loc[1] if self.b.loc[1] + 6 > max else 6
+                num = max - self.b.loc[1] if self.b.loc[1] + length > max else length
             else:
-                num = self.b.loc[1] if self.b.loc[1] - 6 < 0 else 6
+                num = self.b.loc[1] if self.b.loc[1] - length < 0 else length
             
             for i in range(1, num):
-                self.see_prey = np.vstack((self.see_prey, self.map.t1[self.b.loc[1] + i*self.b.direction[0], self.b.loc[0] - 1 : self.b.loc[0] + 2]))
-                self.see_pred = np.vstack((self.see_pred, self.map.t2[self.b.loc[1] + i*self.b.direction[0], self.b.loc[0] - 1 : self.b.loc[0] + 2]))
+                self.see_prey = np.vstack((self.see_prey, self.map.t1[self.b.loc[1] + i*self.b.direction[1], self.b.loc[0] - 1 : self.b.loc[0] + 2]))
+                self.see_pred = np.vstack((self.see_pred, self.map.t2[self.b.loc[1] + i*self.b.direction[1], self.b.loc[0] - 1 : self.b.loc[0] + 2]))
     
         else:
             a = self.b.loc[1] - 1
@@ -168,13 +174,13 @@ class Predator:
             self.see_pred = self.map.t2[self.b.loc[1] - 1 : self.b.loc[1] + 2, self.b.direction[0]]
 
             if self.b.direction[1] > 0:
-                num = max - self.b.loc[0] if self.b.loc[0] + 6 > max else 6
+                num = max - self.b.loc[0] if self.b.loc[0] + length > max else length
             else:
-                num = self.b.loc[0] if self.b.loc[0] - 6 < 0 else 6
+                num = self.b.loc[0] if self.b.loc[0] - length < 0 else length
 
             for i in range(1, num):
-                self.see_prey = np.vstack((self.see_prey, self.map.t1[self.b.loc[1] - 1 : self.b.loc[1] + 2, self.b.loc[0] + i*self.b.direction[1]])) 
-                self.see_pred = np.vstack((self.see_pred, self.map.t2[self.b.loc[1] - 1 : self.b.loc[1] + 2, self.b.loc[0] + i*self.b.direction[1]])) 
+                self.see_prey = np.vstack((self.see_prey, self.map.t1[self.b.loc[1] - 1 : self.b.loc[1] + 2, self.b.loc[0] + i*self.b.direction[0]])) 
+                self.see_pred = np.vstack((self.see_pred, self.map.t2[self.b.loc[1] - 1 : self.b.loc[1] + 2, self.b.loc[0] + i*self.b.direction[0]])) 
 
 
     def death(self):
